@@ -8,7 +8,6 @@ Note: Account ID's, role names, and other sensitive data has been hidden for pub
 import boto3
 from botocore.exceptions import ClientError
 from datetime import date, datetime, timedelta
-import datetime
 
 def createMail(email, certificate, balancerName, msg):
     SENDER = "Automation Team <mail@domain.com>"
