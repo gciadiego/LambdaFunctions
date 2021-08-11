@@ -1,3 +1,10 @@
+'''
+Lambda function to iterate ELB listeners each account has, and determine if a SSL certificate is going to expire. 
+If the certificate already expired or is about to, send an email to the emailContact tag listed in the ELB.
+
+Note: Account ID's, role names, and other sensitive data has been hidden for publication manners.
+'''
+
 import boto3
 from botocore.exceptions import ClientError
 from datetime import date, datetime, timedelta
@@ -126,7 +133,8 @@ def lambda_handler(event, context):
     
     credentials_for_accounts = assumed_role_object_for_accounts['Credentials']
     
-    #Access the oeganizations service using specific credentials
+    # Use the temporary credentials that AssumeRole returns to make a 
+    # connection to Amazon Organizations service and get the accounts
     organizations = boto3.client(
         'organizations',
         aws_access_key_id=credentials_for_accounts['AccessKeyId'],
@@ -134,7 +142,7 @@ def lambda_handler(event, context):
         aws_session_token=credentials_for_accounts['SessionToken'] 
     )
     
-    #Get the accounts using the boto3 api
+    #Get the accounts using the boto3 API
     response_accounts = organizations.list_accounts()
     accountList = response_accounts['Accounts']
     while "NextToken" in response_accounts:
